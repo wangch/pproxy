@@ -3,10 +3,6 @@
 package main
 
 import (
-	// "database/sql"
-	// "errors"
-	// "fmt"
-	// _ "github.com/go-sql-driver/mysql"
 	"encoding/json"
 	"flag"
 	"io/ioutil"
@@ -20,10 +16,6 @@ import (
 )
 
 type Config struct {
-	// User, Password                               string
-	// DbAddr                                       string // ip:port
-	// DbName                                       string
-	// TableName                                    string
 	Http, Socks5 PortRange
 }
 
@@ -66,28 +58,6 @@ func (m *Manager) Heartbeat(id string, r *int) error {
 	*r = m.ss[id]
 	return nil
 }
-
-// func (m *Manager) dbQuery() error {
-// 	login := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8", conf.User, conf.Password, conf.Addr, conf.DbName)
-// 	db, e := sql.Open("mysql", login)
-// 	if e != nil {
-// 		return e
-// 	}
-// 	defer db.Close()
-
-// 	query := fmt.Sprintf("select * from %s", conf.TableName)
-// 	rows, err := db.db.Query(query)
-// 	defer rows.Close()
-// 	for rows.Next() {
-// 		var code string
-// 		e := rows.Scan(&code)
-// 		if e != nil {
-// 			continue
-// 		}
-
-// 	}
-// 	return nil
-// }
 
 var port = flag.String("port", ":15926", "管理服务器的服务端口")
 var ipsFile = flag.String("ips", "ips.txt", "IP白名单文件")
