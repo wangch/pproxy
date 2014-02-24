@@ -59,7 +59,7 @@ func main() {
 
 	// 建立http代理
 	for k, v := range conf.HttpConf {
-		go HttpProxy(ips, k, v.LocalPort, v.Username, v.Password)
+		go HttpProxy3(ips, k, v.LocalPort, v.Username, v.Password)
 	}
 	// 建立socks5代理
 	for k, v := range conf.SocksConf {

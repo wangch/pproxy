@@ -16,12 +16,12 @@ import (
 
 // a HTTP proxy server
 
-type httpProxy struct {
+type httpProxys struct {
 	*httputil.ReverseProxy
 	ips []net.IP
 }
 
-func (p *httpProxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (p *httpProxys) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	p.ReverseProxy.ServeHTTP(w, r)
 }
 
@@ -36,7 +36,7 @@ func HttpProxyServe(ips []net.IP, port int) error {
 	rp.Director = func(r *http.Request) {
 		return
 	}
-	p := &httpProxy{rp, ips}
+	p := &httpProxys{rp, ips}
 	e = http.ListenAndServe(s, p)
 	if e != nil {
 		return e
@@ -62,7 +62,7 @@ func TestHttpProxy(t *testing.T) {
 
 	// create forward server
 	go func() {
-		e := HttpProxy(nil, "localhost:9002", "localhost:9091", "user", "password")
+		e := HttpProxy3(nil, "localhost:9002", "localhost:9091", "user", "password")
 		if e != nil {
 			t.Fatal(e)
 		}

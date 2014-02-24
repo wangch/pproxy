@@ -3,7 +3,6 @@
 package main
 
 import (
-	"encoding/base64"
 	"io"
 	"log"
 	"net"
@@ -98,6 +97,7 @@ func (p *ReverseProxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	req.URL.Scheme = "http"
 
 	p.Transport.Proxy = func(r *http.Request) (*url.URL, error) {
+		req.URL.User = url.UserPassword(p.user, p.password)
 		return req.URL, nil
 	}
 
@@ -107,21 +107,9 @@ func (p *ReverseProxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		rw.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-
-	if res.StatusCode == 407 { // 需要认证
-		req.Header.Set("Proxy-Authorization", base64.StdEncoding.EncodeToString([]byte(p.user+":"+p.password)))
-		res.Body.Close()
-		res, err = p.Transport.RoundTrip(req)
-		if err != nil {
-			log.Printf("http: proxy error: %v", err)
-			rw.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-	}
 	defer res.Body.Close()
 
 	copyHeader(rw.Header(), res.Header)
-
 	rw.WriteHeader(res.StatusCode)
 	p.copyResponse(rw, res.Body)
 }
