@@ -4,7 +4,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/armon/go-socks5"
+	"github.com/wangch/go-socks5"
 	"log"
 	"net"
 )

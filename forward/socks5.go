@@ -5,7 +5,7 @@ package main
 import (
 	"code.google.com/p/go.net/proxy"
 	"fmt"
-	"github.com/armon/go-socks5"
+	"github.com/wangch/go-socks5"
 	"log"
 	"net"
 )
