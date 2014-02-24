@@ -65,10 +65,10 @@ func main() {
 		log.Println("socks port range:", mins, maxs)
 
 		// 建立不同端口的http proxy 和socks5 proxy
-		for i := minh; i < maxh; i++ {
+		for i := minh; i <= maxh; i++ {
 			go HttpProxy(ips, i)
 		}
-		for i := mins; i < maxs; i++ {
+		for i := mins; i <= maxs; i++ {
 			go SocksProxy(ips, i)
 		}
 		// 和manager server 心跳循环, 当返回标志位RESET时，跳出循环
