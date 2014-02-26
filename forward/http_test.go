@@ -62,7 +62,7 @@ func TestHttpProxy(t *testing.T) {
 
 	// create forward server
 	go func() {
-		e := HttpProxy3(nil, "localhost:9091", ":9002", "user", "password")
+		e := HttpProxy(nil, "localhost:9091", ":9002", "user", "password")
 		if e != nil {
 			t.Fatal(e)
 		}

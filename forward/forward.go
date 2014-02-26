@@ -27,7 +27,7 @@ type Config struct {
 var confFile = flag.String("c", "conf.json", "本地配置文件")
 var ipsFile = flag.String("ips", "ips.txt", "IP白名单")
 
-func main() {
+func main1() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	flag.Parse()
 
@@ -76,7 +76,7 @@ func main() {
 
 	// 建立http代理
 	for k, v := range conf.HttpConf {
-		go HttpProxy3(ips, k, v.LocalPort, v.Username, v.Password)
+		go HttpProxy(ips, k, v.LocalPort, v.Username, v.Password)
 	}
 	// 建立socks5代理
 	for k, v := range conf.SocksConf {

@@ -4,7 +4,6 @@ package main
 
 import (
 	"code.google.com/p/go.net/proxy"
-	"fmt"
 	"github.com/wangch/go-socks5"
 	"log"
 	"net"
@@ -23,11 +22,12 @@ func SocksProxy(ips []net.IP, addr, port, user, password string) error {
 	if e != nil {
 		log.Fatal(e)
 	}
-	l, e := s.Listen("tcp", fmt.Sprintf(":%d", port))
+	l, e := s.Listen("tcp", port)
 	if e != nil {
 		return e
 	}
-	log.Println(s.ServeF(l, func(addr net.Addr) bool {
+	e = s.ServeF(l, func(addr net.Addr) bool {
+		log.Println("go here")
 		sip, _, e := net.SplitHostPort(addr.String())
 		if e != nil {
 			return false
@@ -42,6 +42,10 @@ func SocksProxy(ips []net.IP, addr, port, user, password string) error {
 			}
 		}
 		return false
-	}))
+	})
+	if e != nil {
+		log.Println(e)
+		return e
+	}
 	return nil
 }
