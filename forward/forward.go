@@ -50,11 +50,11 @@ func main() {
 	// 读取本地配置文件
 	data, e := ioutil.ReadFile(*confFile)
 	if e != nil {
-		httpconf := map[string]PPP {
-			"127.0.0.1:12345":PPP{":23456","username","password"},
+		httpconf := map[string]PPP{
+			"127.0.0.1:12345": PPP{":23456", "username", "password"},
 		}
-		socksconf := map[string]PPP {
-			"127.0.0.1:34567":PPP{":45678","username","password"},
+		socksconf := map[string]PPP{
+			"127.0.0.1:34567": PPP{":45678", "username", "password"},
 		}
 		conf := &Config{httpconf, socksconf}
 		b, e := json.MarshalIndent(conf, "", "    ")
@@ -83,5 +83,18 @@ func main() {
 		go SocksProxy(ips, k, v.LocalPort, v.Username, v.Password)
 	}
 
-	log.Println("forward server start...")
+	log.Println("forward server start... and type 'q' to exit")
+
+	b = make([]byte, 1)
+	for {
+		_, e := os.Stdin.Read(b)
+		if e != nil {
+			panic(e)
+		}
+
+		switch b[0] {
+		case 'q':
+			return
+		}
+	}
 }
