@@ -13,6 +13,8 @@ import (
 	"os"
 	"runtime"
 	"strings"
+	"sync"
+	"time"
 )
 
 type Config struct {
@@ -26,7 +28,7 @@ type Manager struct {
 }
 
 func (m *Manager) GetIPs(id string, ips *[]net.IP) error {
-	log.Println("Manager.GetIPs")
+	log.Println("proxy connected:", id)
 	*ips = m.ips
 	m.ss[id] = 1
 	return nil
@@ -36,26 +38,34 @@ type PortRange struct {
 	Min, Max int
 }
 
+var proxys = make(map[string]time.Time)
+var mu sync.Mutex
+
 var defaultHttpPortRange = PortRange{40001, 40050}
 var defaultSocks5PortRange = PortRange{41001, 41050}
 
 func (m *Manager) GetHttpPortRange(id string, r *PortRange) error {
-	log.Println("Manager.GetHttpPortRange", id)
+	// log.Println("Manager.GetHttpPortRange", id)
 	*r = m.hpr
 	m.ss[id] = 1
 	return nil
 }
 
 func (m *Manager) GetSocksPortRange(id string, r *PortRange) error {
-	log.Println("Manager.GetSocksPortRange", id)
+	// log.Println("Manager.GetSocksPortRange", id)
 	*r = m.spr
 	m.ss[id] = 1
 	return nil
 }
 
 func (m *Manager) Heartbeat(id string, r *int) error {
-	log.Println("Manager.Heartbeat", id)
+	// log.Println("Manager.Heartbeat", id)
 	*r = m.ss[id]
+
+	// update proxy list
+	mu.Lock()
+	defer mu.Unlock()
+	proxys[id] = time.Now()
 	return nil
 }
 
@@ -108,6 +118,46 @@ func main() {
 	if e != nil {
 		log.Fatal("listen error:", e)
 	}
+
+	go func() {
+		tch := time.Tick(time.Second * 10)
+		f := func() {
+			mu.Lock()
+			defer mu.Unlock()
+			t := time.Now()
+			for k, v := range proxys {
+				if t.Sub(v) > time.Minute*3 {
+					delete(proxys, k)
+				}
+			}
+		}
+		for _ = range tch {
+			f()
+		}
+	}()
+	go func() {
+		g := func() {
+			mu.Lock()
+			defer mu.Unlock()
+			for v, _ := range proxys {
+				println(v)
+			}
+		}
+
+		b = make([]byte, 1)
+		for {
+			_, e := os.Stdin.Read(b)
+			if e != nil {
+				panic(e)
+				break
+			}
+
+			switch b[0] {
+			case 'l':
+				g()
+			}
+		}
+	}()
 
 	log.Println("manager server start...")
 	http.Serve(l, nil)

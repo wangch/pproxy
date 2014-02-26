@@ -14,7 +14,7 @@ import (
 
 // privateproxyIP 参数
 type PPP struct {
-	LocalPort string // 对应的本地端口
+	LocalPort string // 对应的本地端口 ":port"
 	Username  string // 代理认证用户名
 	Password  string // 代理认证密码
 }

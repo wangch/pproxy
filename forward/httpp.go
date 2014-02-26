@@ -49,12 +49,8 @@ func (p *httpProxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	p.ReverseProxy.ServeHTTP(w, r)
 }
 
-func HttpProxy3(ips []net.IP, laddr, raddr, user, password string) error {
-	u, e := url.Parse(laddr)
-	if e != nil {
-		log.Println(e)
-		return e
-	}
+func HttpProxy3(ips []net.IP, raddr, laddr, user, password string) error {
+	u := &url.URL{}
 	rp := httputil.NewSingleHostReverseProxy(u)
 	rp.Director = func(r *http.Request) {
 		return
@@ -66,7 +62,7 @@ func HttpProxy3(ips []net.IP, laddr, raddr, user, password string) error {
 	p := &httpProxy{rp, ips, user, password}
 	p.Transport = t
 
-	e = http.ListenAndServe(laddr, p)
+	e := http.ListenAndServe(laddr, p)
 	if e != nil {
 		return e
 	}

@@ -62,7 +62,7 @@ func TestHttpProxy(t *testing.T) {
 
 	// create forward server
 	go func() {
-		e := HttpProxy3(nil, "localhost:9002", "localhost:9091", "user", "password")
+		e := HttpProxy3(nil, "localhost:9091", ":9002", "user", "password")
 		if e != nil {
 			t.Fatal(e)
 		}
@@ -76,7 +76,7 @@ func TestHttpProxy(t *testing.T) {
 	defer conn.Close()
 
 	// send request
-	conn.Write([]byte("GET http://127.0.0.1 HTTP/1.1\r\n\r\n"))
+	conn.Write([]byte("GET http://127.0.0.1:8080 HTTP/1.1\r\n\r\n"))
 
 	// read respinse
 	r := bufio.NewReader(conn)

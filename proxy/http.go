@@ -44,18 +44,13 @@ func (p *httpProxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func HttpProxy(ips []net.IP, port int) error {
-	s := fmt.Sprintf("localhost:%d", port)
-	u, e := url.Parse(s)
-	if e != nil {
-		log.Println(e)
-		return e
-	}
+	u := &url.URL{}
 	rp := httputil.NewSingleHostReverseProxy(u)
 	rp.Director = func(r *http.Request) {
 		return
 	}
 	p := &httpProxy{rp, ips}
-	e = http.ListenAndServe(s, p)
+	e := http.ListenAndServe(fmt.Sprintf(":%d", port), p)
 	if e != nil {
 		return e
 	}
