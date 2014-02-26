@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net"
+	"os"
 	"runtime"
 	"strings"
 )
@@ -49,7 +50,23 @@ func main() {
 	// 读取本地配置文件
 	data, e := ioutil.ReadFile(*confFile)
 	if e != nil {
-		log.Fatal(e)
+		httpconf := map[string]PPP {
+			"127.0.0.1:12345":PPP{":23456","username","password"},
+		}
+		socksconf := map[string]PPP {
+			"127.0.0.1:34567":PPP{":45678","username","password"},
+		}
+		conf := &Config{httpconf, socksconf}
+		b, e := json.MarshalIndent(conf, "", "    ")
+		if e != nil {
+			panic(e)
+		}
+		e = ioutil.WriteFile(*confFile, b, os.ModePerm)
+		if e != nil {
+			panic(e)
+		}
+		log.Println("Please edit config file for port maping")
+		return
 	}
 
 	e = json.Unmarshal(data, &conf)
