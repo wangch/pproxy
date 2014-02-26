@@ -12,7 +12,7 @@ import (
 )
 
 func TestSocksProxy(t *testing.T) {
-	l, err := net.Listen("tcp", "127.0.0.1:10000")
+	l, err := net.Listen("tcp", "127.0.0.1:13000")
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}
@@ -35,18 +35,18 @@ func TestSocksProxy(t *testing.T) {
 	}()
 
 	go func() {
-		e := SocksProxy(nil, 1080)
+		e := SocksProxy(nil, 14000)
 		if e != nil {
 			t.Fatal(e)
 		}
 	}()
 
-	dialer, e := proxy.SOCKS5("tcp", "127.0.0.1:1080", nil, proxy.Direct)
+	dialer, e := proxy.SOCKS5("tcp", "127.0.0.1:14000", nil, proxy.Direct)
 	if e != nil {
 		t.Error(e)
 	}
 
-	conn, e := dialer.Dial("tcp", "127.0.0.1:10000")
+	conn, e := dialer.Dial("tcp", "127.0.0.1:13000")
 	if e != nil {
 		t.Error(e)
 	}
