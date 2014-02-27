@@ -13,6 +13,7 @@ import (
 
 var manger = flag.String("m", "", "管理服务器的地址, 格式为 IP:PORT, 如:211.323.197.314:10015")
 var local = flag.String("l", "", "本地IP")
+var debug = flag.Bool("d", false, "打印调试日志")
 
 var id string
 

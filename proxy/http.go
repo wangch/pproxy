@@ -20,10 +20,12 @@ type httpProxy struct {
 
 func (p *httpProxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ip, _, e := net.SplitHostPort(r.RemoteAddr)
-	log.Println(ip, r.Method, r.RequestURI)
 	if e != nil {
 		log.Println(e)
 		return
+	}
+	if *debug {
+		log.Println(ip, r.Method, r.RequestURI)
 	}
 	b := false
 	for _, x := range p.ips {
@@ -37,6 +39,10 @@ func (p *httpProxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	if !b {
 		w.Write([]byte("the proxy not surpport this ip"))
+		return
+	}
+
+	if r.Method == "CONNECT" { // https not support
 		return
 	}
 
