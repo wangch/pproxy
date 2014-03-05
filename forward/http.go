@@ -20,10 +20,12 @@ type httpProxy struct {
 
 func (p *httpProxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ip, _, e := net.SplitHostPort(r.RemoteAddr)
-	log.Println(ip, r.Method, r.RequestURI)
 	if e != nil {
 		log.Println(e)
 		return
+	}
+	if *debug {
+		traceLog.Println(ip, r.Method, r.RequestURI)
 	}
 	b := false
 	for _, x := range p.ips {

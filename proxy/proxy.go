@@ -7,6 +7,7 @@ package main
 import (
 	"flag"
 	"log"
+	"os"
 	"runtime"
 	"time"
 )
@@ -17,9 +18,20 @@ var debug = flag.Bool("d", false, "打印调试日志")
 
 var id string
 
+var traceLog *log.Logger //log.New(ioutil.Discard, "[trace]", log.Ltime)
+
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	flag.Parse()
+
+	if *debug {
+		w, e := os.Create("proxyLog.txt")
+		if e != nil {
+			panic(e)
+		}
+		defer w.Close()
+		traceLog = log.New(w, "@@@", log.Ldate|log.Ltime)
+	}
 
 	if len(*manger) == 0 {
 		log.Println("必须设置管理服务器IP和端口")

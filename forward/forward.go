@@ -24,12 +24,24 @@ type Config struct {
 	HttpConf, SocksConf map[string]PPP // map key is addr, format: IP:PORT
 }
 
-var confFile = flag.String("c", "conf.json", "本地配置文件")
+var confFile = flag.String("c", "fconf.json", "本地配置文件")
 var ipsFile = flag.String("ips", "ips.txt", "IP白名单")
+var debug = flag.Bool("d", false, "打印调试日志")
 
-func main1() {
+var traceLog *log.Logger //log.New(ioutil.Discard, "[trace]", log.Ltime)
+
+func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	flag.Parse()
+
+	if *debug {
+		w, e := os.Create("forwardLog.txt")
+		if e != nil {
+			panic(e)
+		}
+		defer w.Close()
+		traceLog = log.New(w, "@@@", log.Ldate|log.Ltime)
+	}
 
 	var conf Config
 	var ips []net.IP

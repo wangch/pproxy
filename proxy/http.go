@@ -25,7 +25,7 @@ func (p *httpProxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if *debug {
-		log.Println(ip, r.Method, r.RequestURI)
+		traceLog.Println(ip, r.Method, r.RequestURI)
 	}
 	b := false
 	for _, x := range p.ips {

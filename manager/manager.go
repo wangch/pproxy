@@ -71,7 +71,7 @@ func (m *Manager) Heartbeat(id string, r *int) error {
 
 var port = flag.String("port", ":15926", "管理服务器的服务端口")
 var ipsFile = flag.String("ips", "ips.txt", "IP白名单文件")
-var confFile = flag.String("conf", "conf.json", "配置文件")
+var confFile = flag.String("conf", "mconf.json", "配置文件")
 
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())

@@ -3,7 +3,7 @@
 package main
 
 import (
-	"bufio"
+	// "bufio"
 	"fmt"
 	"log"
 	"net"
@@ -68,21 +68,21 @@ func TestHttpProxy(t *testing.T) {
 		}
 	}()
 
-	// connect forward server
-	conn, e := net.Dial("tcp", "127.0.0.1:9002")
-	if e != nil {
-		t.Fatal(e)
-	}
-	defer conn.Close()
+	// // connect forward server
+	// conn, e := net.Dial("tcp", "127.0.0.1:9002")
+	// if e != nil {
+	// 	t.Fatal(e)
+	// }
+	// defer conn.Close()
 
-	// send request
-	conn.Write([]byte("GET http://127.0.0.1:8080 HTTP/1.1\r\n\r\n"))
+	// // send request
+	// conn.Write([]byte("GET http://127.0.0.1:8080 HTTP/1.1\r\n\r\n"))
 
 	// read respinse
-	r := bufio.NewReader(conn)
-	resp, e := http.ReadResponse(r, nil)
+	// r := bufio.NewReader(conn)
+	resp, e := http.Get("http://127.0.0.1")
 	if e != nil {
-		t.Error(e)
+		t.Fatal(e)
 	}
 	defer resp.Body.Close()
 
